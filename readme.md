@@ -1,1 +1,11 @@
-celestial data for sky map, primarily for rendering my blog background
+星图，主要为渲染我博客背景服务
+
+基于 [celestial-data](https://github.com/dieghernan/celestial_data/tree/main) 拣选而成
+
+渲染标准：
+1. 六等以上（肉眼极限），恒星（排除深空星体，小行星，银河），但包括八大行星与月亮
+2. 按星等调整大小，避免暗星芜杂
+3. 显示星官名与连线
+4. 显示正星星名（处在星官连线上），不显示增星，不区分重名（不显示括号内补充说明）
+5. 正星星名略去所属星官，只显示序号
+6. 星名应小于星官名，同时各名均需避让星与连线
