@@ -1,4 +1,6 @@
-[
+{
+"type": "FeatureCollection",
+"features": [
 { "type": "Feature", "properties": { "id": 1, "name": "毕宿"},"geometry": { "type": "Point", "coordinates": [ 64.9945, 15.8353 ] } },
 { "type": "Feature", "properties": { "id": 2, "name": "壁宿"},"geometry": { "type": "Point", "coordinates": [ 2.703, 22.137 ] } },
 { "type": "Feature", "properties": { "id": 3, "name": "参宿"},"geometry": { "type": "Point", "coordinates": [ 83.7137, -1.1313 ] } },
@@ -312,3 +314,4 @@
 { "type": "Feature", "properties": { "id": 317, "name": "左摄提"},"geometry": { "type": "Point", "coordinates": [ -139.2541, 15.3463 ] } },
 { "type": "Feature", "properties": { "id": 318, "name": "座旗"},"geometry": { "type": "Point", "coordinates": [ 102.0347, 43.8294 ] } }
 ]
+}
