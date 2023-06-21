@@ -1,0 +1,1 @@
+celestial data for sky map, primarily for rendering my blog background
