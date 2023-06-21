@@ -1,8 +1,4 @@
-{
-"type": "FeatureCollection",
-"name": "constellations.cn",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"features": [
+[
 { "type": "Feature", "properties": { "id": 1, "name": "毕宿", "display_ra": 64.9945, "display_dec": 15.8353, "display_scale": 9.6 }, "geometry": { "type": "Point", "coordinates": [ 64.9945, 15.8353 ] } },
 { "type": "Feature", "properties": { "id": 2, "name": "壁宿", "display_ra": 2.703, "display_dec": 22.137, "display_scale": 13.9 }, "geometry": { "type": "Point", "coordinates": [ 2.703, 22.137 ] } },
 { "type": "Feature", "properties": { "id": 3, "name": "参宿", "display_ra": 83.7137, "display_dec": -1.1313, "display_scale": 17.1 }, "geometry": { "type": "Point", "coordinates": [ 83.7137, -1.1313 ] } },
@@ -316,4 +312,3 @@
 { "type": "Feature", "properties": { "id": 317, "name": "左摄提", "display_ra": -139.2541, "display_dec": 15.3463, "display_scale": 3.2 }, "geometry": { "type": "Point", "coordinates": [ -139.2541, 15.3463 ] } },
 { "type": "Feature", "properties": { "id": 318, "name": "座旗", "display_ra": 102.0347, "display_dec": 43.8294, "display_scale": 9.9 }, "geometry": { "type": "Point", "coordinates": [ 102.0347, 43.8294 ] } }
 ]
-}
