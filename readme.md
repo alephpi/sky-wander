@@ -6,4 +6,7 @@
 
 数据来源 d3-celestial 详见data分支
 
-可视化 d3.js
+可视化:
+- d3.js 
+- d3-geo.js 
+- d3-geo-projection.js
