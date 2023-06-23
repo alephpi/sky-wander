@@ -24,6 +24,5 @@
    ![img](步天示例.png)
 
 [^1]: https://vrui-research.gitbook.io/researchonvrui/ergonomic-issues/jie-mian-zui-yu/ren-yan-kan-neng-li
-    
 [^2]: 其实是圆角方形。截面圆从0°到90°的平展投影形状是从一个点（退化圆）到方形的连续插值
 [^3]: 当然这里的窗口指的实际上是画布canvas，并非浏览器窗口window
