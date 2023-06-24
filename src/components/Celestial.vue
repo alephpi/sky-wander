@@ -1,7 +1,7 @@
 <!-- eslint-disable unused-imports/no-unused-imports -->
 <!-- d3 will use `this` variable hence not compatible with compositional api -->
 <script setup lang="ts">
-import { geoEquirectangular, geoPath, zoom } from 'd3'
+import { geoClipRectangle, geoEquirectangular, geoPath, zoom } from 'd3'
 import { reactive } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { constellaLines, constellations, getAngles, getZenith, starColor, starSize, stars } from '~/composables'
@@ -13,11 +13,6 @@ const el = ref<HTMLCanvasElement | null>(null)
 const size = reactive(useWindowSize({ includeScrollbar: false }))
 
 // transform
-
-const projection = geoEquirectangular()
-const projectionRatio = 1 // since we use 30° clip circle
-const zenith = getZenith()
-const rotation = getAngles(zenith)
 
 function initCanvas(canvas: HTMLCanvasElement, width = 400, height = 400, _dpi?: number) {
   const ctx = canvas.getContext('2d')!
@@ -38,6 +33,11 @@ function initCanvas(canvas: HTMLCanvasElement, width = 400, height = 400, _dpi?:
 }
 
 function render() {
+  const projection = geoEquirectangular()
+  const projectionRatio = 1 // since we use 30° clip circle
+  const zenith = getZenith()
+  const rotation = getAngles(zenith)
+
   const canvas = el.value!
   const length = (size.height < size.width) ? size.height : size.width
   const { ctx } = initCanvas(canvas, length, length * projectionRatio)
@@ -45,8 +45,13 @@ function render() {
   const l = width
   const r = size.width / size.height
   // w, h as the view field width and height adapt to actual window shape
+
   const w = l / Math.sqrt(1 + 1 / (r * r))
   const h = l / Math.sqrt(1 + (r * r))
+  ctx.translate(-(l - w) / 2, -(l - h) / 2)
+  const zoom_x = size.width / w
+  const zoom_y = size.height / h
+  ctx.scale(zoom_x, zoom_y)
   // auxiliary figures
   ctx.clearRect(0, 0, width, height)
   ctx.fillStyle = '#000'
@@ -57,12 +62,14 @@ function render() {
 
   const scale = width / 1024
   const adapt = Math.sqrt(scale)
-
+  console.log(l, w)
   projection
     .rotate(rotation) // 投影球面的转动，即观察者转动观察角度和方向，我们默认不转动，观察者始终盯着天顶
     .clipAngle(30) // 投影的经纬度范围，即观察者的视野范围，这里采用正常人眼的中央视野范围，即+-30°
     // .center([0, 0])
     .fitExtent([[0, 0], [width, height]], stars)
+    .postclip(geoClipRectangle((l - w) / 2, (l - h) / 2, (l + w) / 2, (l + h) / 2))
+    // .fitWidth(size.width, stars)
     // .translate([[(l - w) / 2, (l - h) / 2], [(l + w) / 2, (l + h) / 2]])
 
   // console.log(width, height)
@@ -75,6 +82,8 @@ function render() {
     ctx.fillStyle = starColor(star.properties.bv)
     ctx.fill()
   })
+  // console.log(zoom_x, zoom_y)
+  // ctx.scale(zoom_x, zoom_y)
 }
 
 onMounted(async () => {
