@@ -18,7 +18,7 @@ interface constellaCollection extends FeatureCollection<Geometry, pConstella> {}
 
 // data
 export const stars = await json('../stars.6.min.geojson') as starCollection
-export const constella = await json('../constellations.min.geojson') as constellaCollection
+export const constellations = await json('../constellations.min.geojson') as constellaCollection
 export const constellaLines = await json('../constellations.lines.min.geojson') as constellaCollection
 
 export const spectrum = [

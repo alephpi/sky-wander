@@ -94,6 +94,8 @@ declare global {
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
   const spectrum: typeof import('./src/composables/data')['spectrum']
+  const starColor: typeof import('./src/composables/data')['starColor']
+  const starSize: typeof import('./src/composables/data')['starSize']
   const stars: typeof import('./src/composables/data')['stars']
   const syncRef: typeof import('@vueuse/core')['syncRef']
   const syncRefs: typeof import('@vueuse/core')['syncRefs']
@@ -387,6 +389,8 @@ declare module 'vue' {
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
     readonly spectrum: UnwrapRef<typeof import('./src/composables/data')['spectrum']>
+    readonly starColor: UnwrapRef<typeof import('./src/composables/data')['starColor']>
+    readonly starSize: UnwrapRef<typeof import('./src/composables/data')['starSize']>
     readonly stars: UnwrapRef<typeof import('./src/composables/data')['stars']>
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>
@@ -673,6 +677,8 @@ declare module '@vue/runtime-core' {
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
     readonly spectrum: UnwrapRef<typeof import('./src/composables/data')['spectrum']>
+    readonly starColor: UnwrapRef<typeof import('./src/composables/data')['starColor']>
+    readonly starSize: UnwrapRef<typeof import('./src/composables/data')['starSize']>
     readonly stars: UnwrapRef<typeof import('./src/composables/data')['stars']>
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>

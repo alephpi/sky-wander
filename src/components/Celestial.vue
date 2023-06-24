@@ -25,7 +25,7 @@ function initCanvas(canvas: HTMLCanvasElement, width = 400, height = 400, _dpi?:
 
   canvas.style.width = `${width}px`
   canvas.style.height = `${height}px`
-  canvas.width = height * dpi
+  canvas.width = width * dpi
   canvas.height = height * dpi
   // ctx.scale(dpi, dpi)
 
@@ -33,57 +33,55 @@ function initCanvas(canvas: HTMLCanvasElement, width = 400, height = 400, _dpi?:
 }
 
 function render() {
-  const projection = geoEquirectangular()
-  const projectionRatio = 1 // since we use 30° clip circle
-  const zenith = getZenith()
-  const rotation = getAngles(zenith)
-
   const canvas = el.value!
-  const length = (size.height < size.width) ? size.height : size.width
-  const { ctx } = initCanvas(canvas, length, length * projectionRatio)
+  const { ctx } = initCanvas(canvas, size.width, size.height)
   const { width, height } = canvas
-  const l = width
-  const r = size.width / size.height
-  // w, h as the view field width and height adapt to actual window shape
+  const ratio = width / height
+  const [w, h] = (ratio > 1) ? [30, 30 / ratio] : [30 * ratio, 30]
+  const coordinates = [[-w, -h], [w, h]]
 
-  const w = l / Math.sqrt(1 + 1 / (r * r))
-  const h = l / Math.sqrt(1 + (r * r))
-  // ctx.translate(-(l - w) / 2, -(l - h) / 2)
-  const zoom_x = size.width / w
-  const zoom_y = size.height / h
-  // ctx.scale(zoom_x, zoom_y)
   // auxiliary figures
   ctx.clearRect(0, 0, width, height)
   ctx.fillStyle = '#000'
   ctx.fillRect(0, 0, width, height)
-  ctx.strokeStyle = 'blue' // Border color
-  ctx.lineWidth = 2 // Border width
-  ctx.strokeRect((l - w) / 2, (l - h) / 2, w, h)
+
+  const zenith = getZenith()
+  const rotation = getAngles(zenith)
 
   const scale = width / 1024
   const adapt = Math.sqrt(scale)
-  console.log(l, w)
-  projection
-    .rotate(rotation) // 投影球面的转动，即观察者转动观察角度和方向，我们默认不转动，观察者始终盯着天顶
-    .clipAngle(30) // 投影的经纬度范围，即观察者的视野范围，这里采用正常人眼的中央视野范围，即+-30°
-    // .center([0, 0])
-    .fitExtent([[0, 0], [width, height]], stars)
-    .postclip(geoClipRectangle((l - w) / 2, (l - h) / 2, (l + w) / 2, (l + h) / 2))
-    // .fitWidth(size.width, stars)
-    // .translate([[(l - w) / 2, (l - h) / 2], [(l + w) / 2, (l + h) / 2]])
+  const projection
+    = geoEquirectangular()
+      .fitExtent([[0, 0], [width, height]], { type: 'MultiPoint', coordinates })
+      // .rotate(rotation) // 投影球面的转动，即观察者转动观察角度和方向，我们默认不转动，观察者始终盯着天顶
 
-  // console.log(width, height)
-
-  const starPath = geoPath(projection, ctx).pointRadius(d => Math.max(adapt * starSize(d.properties.mag), 0.1))
+  const starsPath = geoPath(projection, ctx).pointRadius(d => Math.max(adapt * starSize(d.properties.mag), 0.1))
+  const constellaLinesPath = geoPath(projection, ctx)
   // draw stars
   stars.features.forEach((star) => {
     ctx.beginPath()
-    starPath(star)
+    starsPath(star)
     ctx.fillStyle = starColor(star.properties.bv)
     ctx.fill()
+    const pt = projection(star.geometry.coordinates) as [number, number]
+    const r = Math.max(adapt * starSize(star.properties.mag), 0.1)
+    if (star.properties.name !== null)
+      ctx.fillText(star.properties.name, pt[0] - r, pt[1]) // 避让半径
   })
-  // console.log(zoom_x, zoom_y)
-  // ctx.scale(zoom_x, zoom_y)
+
+  // draw constellation
+  ctx.beginPath()
+  constellaLinesPath(constellaLines)
+  ctx.strokeStyle = '#999'
+  ctx.stroke()
+
+  // draw constellation name
+  constellations.features.forEach((constellation) => {
+    ctx.beginPath()
+    const pt = projection(constellation.geometry.coordinates) as [number, number]
+    if (constellation.properties.name !== null)
+      ctx.fillText(constellation.properties.name, pt[0], pt[1]) // 避让半径
+  })
 }
 
 onMounted(async () => {
