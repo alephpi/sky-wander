@@ -48,10 +48,10 @@ function render() {
 
   const w = l / Math.sqrt(1 + 1 / (r * r))
   const h = l / Math.sqrt(1 + (r * r))
-  ctx.translate(-(l - w) / 2, -(l - h) / 2)
+  // ctx.translate(-(l - w) / 2, -(l - h) / 2)
   const zoom_x = size.width / w
   const zoom_y = size.height / h
-  ctx.scale(zoom_x, zoom_y)
+  // ctx.scale(zoom_x, zoom_y)
   // auxiliary figures
   ctx.clearRect(0, 0, width, height)
   ctx.fillStyle = '#000'
