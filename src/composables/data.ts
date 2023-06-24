@@ -1,4 +1,4 @@
-import { json } from 'd3'
+import { extent, json, scaleQuantize } from 'd3'
 import type { FeatureCollection, Geometry } from 'geojson'
 
 interface pStar {
@@ -39,3 +39,17 @@ export const spectrum = [
   '#ff7300', '#ff7000', '#ff6d00', '#ff6b00', '#ff6900', '#ff6700',
   '#ff6500', '#ff6300', '#ff6000', '#ff5d00', '#ff5b00', '#ff5900',
   '#ff5600', '#ff5300', '#ff4f00', '#ff4b00', '#ff4700']
+
+// constants
+const starbase = 7
+const starexp = -0.28
+
+// marker size, color
+export function starSize(mag: number | null) {
+  if (mag === null)
+    return 0.1
+  return starbase * Math.exp(starexp * (mag + 2))
+}
+// main sequence (主序星) bv <= 1.7
+const starBVRange = extent(stars.features, d => d.properties.bv) as [number, number]
+export const starColor = scaleQuantize(starBVRange, spectrum)
