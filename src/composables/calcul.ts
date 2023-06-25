@@ -5,6 +5,11 @@ const eulerAngles = {
   ecliptic: [0.0, 0.0, 23.4393], // 黄道
 }
 
+/**
+ * Get rotation euler angles such that the given coords is rotated to the center
+ * @param coords - [latitude, longitude, orientation(optional)]
+ * @returns euler angle
+ */
 export function getAngles(coords: [number, number] | [number, number, number]): [number, number, number] {
   if (coords === null || coords.length <= 0)
     return [0, 0, 0]
@@ -14,22 +19,29 @@ export function getAngles(coords: [number, number] | [number, number, number]): 
   return [rot[0] - coords[0], rot[1] - coords[1], rot[2] + coords[2]]
 }
 
-export function getGeoPos() {
-  let geoPos: [number, number] = [0, 0]
-  if (navigator.geolocation) {
+async function getGeoPos(): Promise<[number, number]> {
+  return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
-      (pos) => { geoPos = [pos.coords.latitude, pos.coords.longitude] },
+      (pos) => { resolve([pos.coords.latitude, pos.coords.longitude]) },
+
+      (err) => {
+        console.error(`Error: ${err.message}, fallback to [0,0]`)
+        // eslint-disable-next-line prefer-promise-reject-errors
+        reject([0, 0])
+      }, // we prefer return a default fallback if error
     )
-  }
-  return geoPos
+  })
 }
 
-// we need to find equatorial coordinates for zenith
-// i.e right ascention and declination
-// its declination is equal to the observer's latitude
-// while its right ascention depends on the sidereal time
-export function getZenith(): [number, number] {
-  const loc = getGeoPos()
+/**
+* we need to find equatorial coordinates for zenith
+* i.e. right ascention and declination
+* its declination is equal to the observer's latitude
+* while its right ascention depends on the sidereal time
+*/
+export async function getZenith(): Promise<[number, number]> {
+  const loc = await getGeoPos()
+  console.log(loc)
   const dt = new Date()
   const ra = getMST(dt, loc[1])
   const dec = loc[0]
