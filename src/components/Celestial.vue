@@ -41,22 +41,19 @@ async function render() {
   const [w, h] = (ratio > 1) ? [30, 30 / ratio] : [30 * ratio, 30]
   const coordinates = [[-w, -h], [-w, h], [w, -h], [w, h]]
 
-  // auxiliary figures
   ctx.clearRect(0, 0, width, height)
   ctx.fillStyle = '#000'
   ctx.fillRect(0, 0, width, height)
 
   const rotation = getAngles(zenith)
-  console.log(zenith)
-  console.log(rotation)
 
   const scale = width / 1024
   const adapt = Math.sqrt(scale)
   const projection
-    = geoEquirectangular()
-      .fitExtent([[0, 0], [width, height]], { type: 'MultiPoint', coordinates })
-      .rotate(rotation) // 投影球面的转动，即观察者转动观察角度和方向，我们默认不转动，观察者始终盯着天顶
-      // .fitExtent([[0, 0], [width, height]], stars)
+  = geoEquirectangular()
+    .fitExtent([[0, 0], [width, height]], { type: 'MultiPoint', coordinates })
+    .rotate(rotation) // 投影球面的转动，即观察者转动观察角度和方向，我们默认不转动，观察者始终盯着天顶
+    .reflectX(true)
 
   const starsPath = geoPath(projection, ctx).pointRadius(d => Math.max(adapt * starSize(d.properties.mag), 0.1))
   const constellaLinesPath = geoPath(projection, ctx)
@@ -68,6 +65,7 @@ async function render() {
     ctx.fill()
     const pt = projection(star.geometry.coordinates) as [number, number]
     const r = Math.max(adapt * starSize(star.properties.mag), 0.1)
+    ctx.font = '14px '
     if (star.properties.name !== null)
       ctx.fillText(star.properties.name, pt[0] - r, pt[1]) // 避让半径
   })
@@ -97,9 +95,3 @@ onMounted(async () => {
 <template>
   <canvas id="celestial" ref="el" width="400" height="400" style="display: block" />
 </template>
-
-<style scoped>
-#celestial {
-  /* font:  */
-}
-</style>
